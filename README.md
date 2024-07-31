@@ -3,6 +3,6 @@ AgriGuard
 - imageprocessor=> run detectorscript.py(change different models)
   - imageprocessor/detectorscript.py
 - blink => mqtt subscribe for esp8266
-- mqttelephant => 
+- mqttelephant => iotsample elephant status detector
 - notebook => yolo model trainig notebook with sample datasets
 - mqttp => basic web app
