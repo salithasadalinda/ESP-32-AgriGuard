@@ -6,3 +6,4 @@ AgriGuard
 - mqttelephant => iotsample elephant status detector
 - notebook => yolo model trainig notebook with sample datasets
 - mqttp => basic web app
+  - streamlit run app.py
