@@ -1,6 +1,7 @@
 import db
 import time
-
+from db import cnx_pool
+cnx = cnx_pool.get_connection()
 def create_log(sensorid, name, date, time, userid):
     """
     This function creates a log entry in the database.
@@ -15,10 +16,6 @@ def create_log(sensorid, name, date, time, userid):
     Returns:
         None
     """
-    # Initialize the connection pool
-    cnx_pool = db.cnx_pool
-    cnx = cnx_pool.get_connection()
-
     try:
         cnx.start_transaction()
 

@@ -21,6 +21,8 @@ class_names = [
 cap = cv2.VideoCapture(video_path)
 
 # Loop through the video frames
+priv_log=set()# check and solve double message problem
+
 while cap.isOpened():
     # Read a frame from the video
     success, frame = cap.read()
@@ -34,7 +36,7 @@ while cap.isOpened():
         # Check if there are any detections
         if results[0].boxes is not None:
             # Print the detected results
-            class_labels = set() # create a set to avoid duplicates
+            detected_class_labels = set() # create a set to avoid duplicates
             for result in results[0].boxes:
                 # Get the bounding box coordinates
                 x1, y1, x2, y2 = result.xyxy[0].cpu().numpy()
@@ -45,14 +47,14 @@ while cap.isOpened():
                 # Get the class label
                 class_label = class_names[class_id]
                 # adding detected result to the set
-                class_labels.add(class_label)
+                detected_class_labels.add(class_label)
                 print(f"Class: {class_label}, ID: {class_id}, Confidence: {confidence}, Box: [{x1}, {y1}, {x2}, {y2}]")
-            # sent mqtt message
-            mqtt_publish_msg(sen1=sensor,user1=user,detected_animal = f"{class_labels}")
-            # create mysql log for the detected animal or human
-            # TODO: implement db logger 
-            
-            
+            #condition double tap detected confidance and accuracy
+            if detected_class_labels!=priv_log:
+                # TODO: implement db logger
+                # sent mqtt message
+                mqtt_publish_msg(sen1=sensor,user1=user,detected_animal = f"{detected_class_labels}")
+                # create mysql log for the detected animal or human             
                 
         else:
             print("No detections in this frame.")
