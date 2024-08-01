@@ -1,6 +1,8 @@
 import cv2
 from ultralytics import YOLO
 from send_mqtt import mqtt_publish_msg
+from db import cnx_pool
+
 # Load the YOLOv8 model
 model = YOLO("yolov8n_elephant.pt")
 
@@ -48,7 +50,10 @@ while cap.isOpened():
             # sent mqtt message
             mqtt_publish_msg(sen1=sensor,user1=user,detected_animal = f"{class_labels}")
             # create mysql log for the detected animal or human
-            # TODO: implement db logger
+            # TODO: implement db logger 
+            
+            
+                
         else:
             print("No detections in this frame.")
 
