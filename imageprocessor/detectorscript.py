@@ -1,15 +1,16 @@
 import cv2
 from ultralytics import YOLO
 from send_mqtt import mqtt_publish_msg
-from db import cnx_pool
-
+from db import cnx_pool,create_log
+import datetime
+##########################################################yolo model####################################
 # Load the YOLOv8 model
 model = YOLO("yolov8n_elephant.pt")
 
 # model inputs
 video_path = 'testor.mp4'
 sensor='sensor1'
-user='user1'
+user=21
 
 # Define the class names (make sure this matches your model's classes)
 class_names = [
@@ -21,9 +22,10 @@ class_names = [
 cap = cv2.VideoCapture(video_path)
 
 # Loop through the video frames
-priv_log=set()# check and solve double message problem
 
+priv_log=set()# check and solve double message problem
 while cap.isOpened():
+    
     # Read a frame from the video
     success, frame = cap.read()
     if success:
@@ -48,14 +50,16 @@ while cap.isOpened():
                 class_label = class_names[class_id]
                 # adding detected result to the set
                 detected_class_labels.add(class_label)
-                print(f"Class: {class_label}, ID: {class_id}, Confidence: {confidence}, Box: [{x1}, {y1}, {x2}, {y2}]")
+                # print(f"Class: {class_label}, ID: {class_id}, Confidence: {confidence}, Box: [{x1}, {y1}, {x2}, {y2}]")
             #condition double tap detected confidance and accuracy
             if detected_class_labels!=priv_log:
-                # TODO: implement db logger
                 # sent mqtt message
                 mqtt_publish_msg(sen1=sensor,user1=user,detected_animal = f"{detected_class_labels}")
-                # create mysql log for the detected animal or human             
-                
+                # create mysql log for the detected animal or human    
+                now = datetime.datetime.now()
+                create_log(sensorid=sensor, name=f'{detected_class_labels}', date=now.strftime("%Y-%m-%d"), log_time=now.strftime("%H:%M:%S"), userid=user)
+                # send detection result intu image blob to see the case really
+                priv_log=detected_class_labels
         else:
             print("No detections in this frame.")
 
@@ -66,8 +70,8 @@ while cap.isOpened():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
     else:
-        # Break the loop if the end of the video is reached
         break
+        # Break the loop if the end of the video is reached
 
 # Release the video capture object and close the display window
 cap.release()
