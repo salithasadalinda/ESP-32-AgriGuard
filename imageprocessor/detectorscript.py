@@ -51,8 +51,8 @@ while cap.isOpened():
                 # adding detected result to the set
                 detected_class_labels.add(class_label)
                 # print(f"Class: {class_label}, ID: {class_id}, Confidence: {confidence}, Box: [{x1}, {y1}, {x2}, {y2}]")
-            #condition double tap detected confidance and accuracy
-            if detected_class_labels!=priv_log:
+            #condition double tap detected confidance and accuracy null detection
+            if detected_class_labels!=priv_log and detected_class_labels!= set():
                 # sent mqtt message
                 mqtt_publish_msg(sen1=sensor,user1=user,detected_animal = f"{detected_class_labels}")
                 # create mysql log for the detected animal or human    
