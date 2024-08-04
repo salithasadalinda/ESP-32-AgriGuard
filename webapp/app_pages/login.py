@@ -1,6 +1,16 @@
 import streamlit as st
 import mysql.connector
-from db import cnx_pool, decrypt_message, encrypt_message, key
+from db import decrypt_message, encrypt_message, key
+
+# Define the database configuration
+db_config = {
+    'user': 'root',
+    'password': 'root',
+    'host': 'localhost',
+    'port': 3308,
+    'database': 'agriguard',
+    'raise_on_warnings': True
+}
 
 def login():
     # Create a title for your page
@@ -29,7 +39,8 @@ def login():
     if st.button("Login"):
         if username and password:
             try:
-                cnx = cnx_pool.get_connection()
+                # Create a new connection for each login attempt
+                cnx = mysql.connector.connect(**db_config)
                 cursor = cnx.cursor(dictionary=True)
 
                 # Fetch the user details from the database

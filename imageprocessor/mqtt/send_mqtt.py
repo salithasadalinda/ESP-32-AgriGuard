@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import time
 # MQTT broker details
 mqtt_broker = "test.mosquitto.org"
 mqtt_port = 1883
@@ -15,5 +16,8 @@ def mqtt_publish_msg(sen1="sensor1",user1='user1',detected_animal = "elephant"):
     # Disconnect from the broker
     client.disconnect()
 
-
-# mqtt_publish_msg(sen1="sensor1",user1='user1',detected_animal = "elephant")
+while True:
+    mqtt_publish_msg(sen1="sensor1",user1='21',detected_animal = "{'elephant'}")
+    #add a delay
+    time.sleep(15)
+    

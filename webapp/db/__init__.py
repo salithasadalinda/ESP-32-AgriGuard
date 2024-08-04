@@ -1,2 +1,2 @@
-from .importdb import cnx_pool
+from .importdb import connection
 from .crypto import encrypt_message, decrypt_message,key
